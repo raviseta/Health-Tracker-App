@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:trackers/Trackers/tracker-card.dart';
+import 'package:trackers/Trackers/tracker_card.dart';
+import 'package:trackers/Trackers/tracker_detail.dart';
 import 'package:trackers/Trackers/trackersection.dart';
 
 class MyHomePage extends StatelessWidget {
@@ -20,7 +21,15 @@ class MyHomePage extends StatelessWidget {
           itemCount: 5,
           itemBuilder: (context, index) {
             return InkWell(
-              onTap: () {},
+              onTap: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (BuildContext context) {
+                      return const TrackerDetail();
+                    },
+                  ),
+                );
+              },
               child: const SectionWidget(
                   title: 'Nutritions',
                   icon: Icons.restaurant,

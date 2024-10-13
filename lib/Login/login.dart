@@ -1,8 +1,43 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 import 'package:trackers/Trackers/trackerlist.dart';
 
-class LoginScreen extends StatelessWidget {
+class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
+
+  @override
+  // ignore: library_private_types_in_public_api
+  _LoginScreenState createState() => _LoginScreenState();
+}
+
+class _LoginScreenState extends State<LoginScreen> {
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+  bool isLoading = false;
+
+  Future<void> loginUser(String email, String password) async {
+    setState(() {
+      isLoading = true;
+    });
+
+    final url = Uri.parse('https://api.dev.healthtechgate.com/login');
+    final response = await http.post(
+      url,
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: jsonEncode({'email': email, 'password': password}),
+    );
+
+    if (response.statusCode == 200) {
+      Navigator.push(
+        // ignore: use_build_context_synchronously
+        context,
+        MaterialPageRoute(builder: (context) => const MyHomePage()),
+      );
+    } else {}
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -20,16 +55,18 @@ class LoginScreen extends StatelessWidget {
             const SizedBox(height: 40),
 
             // Email TextField
-            const TextField(
-              decoration: InputDecoration(
+            TextField(
+              controller: _emailController,
+              decoration: const InputDecoration(
                 labelText: 'Email',
                 border: OutlineInputBorder(),
               ),
             ),
             const SizedBox(height: 16),
             // Password TextField
-            const TextField(
-              decoration: InputDecoration(
+            TextField(
+              controller: _passwordController,
+              decoration: const InputDecoration(
                 labelText: 'Password',
                 border: OutlineInputBorder(),
                 suffixIcon: Icon(Icons.visibility),
@@ -53,10 +90,9 @@ class LoginScreen extends StatelessWidget {
             // Login button
             ElevatedButton(
               onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const MyHomePage()),
-                );
+                final email = _emailController.text;
+                final password = _passwordController.text;
+                loginUser(email, password);
               },
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.blue,

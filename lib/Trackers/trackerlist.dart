@@ -16,6 +16,7 @@ class MyHomePage extends StatelessWidget {
           actions: [
             IconButton(onPressed: () {}, icon: const Icon(Icons.refresh))
           ],
+          automaticallyImplyLeading: false,
         ),
         body: ListView.builder(
           itemCount: 5,
@@ -50,28 +51,3 @@ class MyHomePage extends StatelessWidget {
         ));
   }
 }
-
-// class MyListView extends StatelessWidget {
-//   // Sample data for the ListView
-//   final List<String> items = List<String>.generate(20, (index) => "Item $index");
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return ListView.builder(
-//       itemCount: items.length,
-//       itemBuilder: (context, index) {
-//         return InkWell(
-//           onTap: () {
-//             // Action when the row is clicked
-//             ScaffoldMessenger.of(context).showSnackBar(
-//               SnackBar(content: Text('Clicked on ${items[index]}')),
-//             );
-//           },
-//           child: ListTile(
-//             title: Text(items[index]),
-//           ),
-//         );
-//       },
-//     );
-//   }
-// }

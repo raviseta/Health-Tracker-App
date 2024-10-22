@@ -47,13 +47,6 @@ class _LoginScreenState extends State<LoginScreen> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            // Logo or Image
-            Image.network(
-              'https://via.placeholder.com/150', // Replace with your logo
-              height: 80,
-            ),
-            const SizedBox(height: 40),
-
             // Email TextField
             TextField(
               controller: _emailController,

@@ -1,7 +1,5 @@
-import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
-import 'package:trackers/Trackers/trackerlist.dart';
+import 'package:trackers/services/api_services.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -16,27 +14,45 @@ class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController _passwordController = TextEditingController();
   bool isLoading = false;
 
-  Future<void> loginUser(String email, String password) async {
-    setState(() {
-      isLoading = true;
-    });
+  // Future<void> loginUser(String email, String password) async {
+  //   setState(() {
+  //     isLoading = true;
+  //   });
 
-    final url = Uri.parse('https://api.dev.healthtechgate.com/login');
-    final response = await http.post(
-      url,
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: jsonEncode({'email': email, 'password': password}),
+  //   final url = Uri.parse('https://api.dev.healthtechgate.com/login');
+  //   final response = await http.post(
+  //     url,
+  //     headers: {
+  //       'Content-Type': 'application/json',
+  //     },
+  //     body: jsonEncode({'email': email, 'password': password}),
+  //   );
+
+  //   if (response.statusCode == 200) {
+  //     Navigator.push(
+  //       // ignore: use_build_context_synchronously
+  //       context,
+  //       MaterialPageRoute(builder: (context) => const MyHomePage()),
+  //     );
+  //   } else {
+  //     _showErrorDialog("Incorrect username or password.");
+  //   }
+  // }
+
+  void _showErrorDialog(String message) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text('Login Error'),
+        content: Text(message),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: Text('OK'),
+          ),
+        ],
+      ),
     );
-
-    if (response.statusCode == 200) {
-      Navigator.push(
-        // ignore: use_build_context_synchronously
-        context,
-        MaterialPageRoute(builder: (context) => const MyHomePage()),
-      );
-    } else {}
   }
 
   @override
@@ -85,7 +101,12 @@ class _LoginScreenState extends State<LoginScreen> {
               onPressed: () {
                 final email = _emailController.text;
                 final password = _passwordController.text;
-                loginUser(email, password);
+
+                if (email == '' || password == '') {
+                  _showErrorDialog("Incorrect username or password.");
+                } else {
+                  APIService().loginUser(email, password)
+                }
               },
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.blue,

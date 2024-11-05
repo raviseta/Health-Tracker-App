@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:trackers/services/api_services.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -12,32 +11,9 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+
   bool isLoading = false;
-
-  // Future<void> loginUser(String email, String password) async {
-  //   setState(() {
-  //     isLoading = true;
-  //   });
-
-  //   final url = Uri.parse('https://api.dev.healthtechgate.com/login');
-  //   final response = await http.post(
-  //     url,
-  //     headers: {
-  //       'Content-Type': 'application/json',
-  //     },
-  //     body: jsonEncode({'email': email, 'password': password}),
-  //   );
-
-  //   if (response.statusCode == 200) {
-  //     Navigator.push(
-  //       // ignore: use_build_context_synchronously
-  //       context,
-  //       MaterialPageRoute(builder: (context) => const MyHomePage()),
-  //     );
-  //   } else {
-  //     _showErrorDialog("Incorrect username or password.");
-  //   }
-  // }
+  final formKey = new GlobalKey<FormState>();
 
   void _showErrorDialog(String message) {
     showDialog(
@@ -55,80 +31,98 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
+  void validateAndSave() {
+    final form = formKey.currentState;
+    if (form!.validate()) {}
+  }
+
   @override
   Widget build(BuildContext context) {
+    String _email;
+
     return Scaffold(
       body: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            // Email TextField
-            TextField(
-              controller: _emailController,
-              decoration: const InputDecoration(
-                labelText: 'Email',
-                border: OutlineInputBorder(),
-              ),
-            ),
-            const SizedBox(height: 16),
-            // Password TextField
-            TextField(
-              controller: _passwordController,
-              decoration: const InputDecoration(
-                labelText: 'Password',
-                border: OutlineInputBorder(),
-                suffixIcon: Icon(Icons.visibility),
-              ),
-              obscureText: true,
-            ),
-            const SizedBox(height: 10),
-            // Remember Me checkbox
-            Row(
-              children: [
-                Checkbox(
-                  value: false,
-                  onChanged: (bool? value) {
-                    // Handle checkbox
-                  },
-                ),
-                const Text('Remember me'),
-              ],
-            ),
-            const SizedBox(height: 16),
-            // Login button
-            ElevatedButton(
-              onPressed: () {
-                final email = _emailController.text;
-                final password = _passwordController.text;
-
-                if (email == '' || password == '') {
-                  _showErrorDialog("Incorrect username or password.");
-                } else {
-                  APIService().loginUser(email, password)
-                }
-              },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.blue,
-                minimumSize:
-                    const Size(double.infinity, 50), // Full-width button
-              ),
-              child: const Text('Login'),
-            ),
-            const SizedBox(height: 16),
-            // Forgot password
-            TextButton(
-              onPressed: () {
-                // Forgot password action
-              },
-              child: const Text(
-                'Forgot Password?',
-                style: TextStyle(color: Colors.blue),
-              ),
-            ),
-          ],
+        child: Form(
+          key: formKey,
+          child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: textFieldView() + loginButtonView() + forgotPassView()),
         ),
       ),
     );
+  }
+
+  List<Widget> textFieldView() {
+    return [
+      TextFormField(
+        controller: _emailController,
+        decoration: const InputDecoration(
+          labelText: 'Email',
+          border: OutlineInputBorder(),
+        ),
+        validator: (value) => value!.isEmpty ? 'Email can\'t be empty' : null,
+      ),
+      SizedBox(height: 16),
+      TextFormField(
+        controller: _passwordController,
+        decoration: const InputDecoration(
+          labelText: 'Password',
+          border: OutlineInputBorder(),
+          suffixIcon: Icon(Icons.visibility),
+        ),
+        obscureText: true,
+        validator: (value) =>
+            value!.isEmpty ? 'Password can\'t be empty' : null,
+      ),
+      Row(
+        children: [
+          Checkbox(
+            value: false,
+            onChanged: (bool? value) {
+              // Handle checkbox
+            },
+          ),
+          const Text('Remember me'),
+        ],
+      ),
+    ];
+  }
+
+  List<Widget> loginButtonView() {
+    return [
+      ElevatedButton(
+        onPressed: () {
+          validateAndSave();
+          // final email = _emailController.text;
+          // final password = _passwordController.text;
+
+          // if (email == '' || password == '') {
+          //   //    _showErrorDialog("Incorrect username or password.");
+          // } else {
+          //   APIService().loginUser(email, password);
+          // }
+        },
+        style: ElevatedButton.styleFrom(
+          backgroundColor: Colors.blue,
+          minimumSize: const Size(double.infinity, 50), // Full-width button
+        ),
+        child: const Text('Login'),
+      )
+    ];
+  }
+
+  List<Widget> forgotPassView() {
+    return [
+      TextButton(
+        onPressed: () {
+          // Forgot password action
+        },
+        child: const Text(
+          'Forgot Password?',
+          style: TextStyle(color: Colors.blue),
+        ),
+      ),
+    ];
   }
 }
